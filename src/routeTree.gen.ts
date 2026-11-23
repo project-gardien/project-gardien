@@ -10,33 +10,98 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminQuestionsQuestionIdRouteImport } from './routes/admin/questions/$questionId'
+import { Route as AdminQuestionsNewRouteImport } from './routes/admin/questions/new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminQuestionsQuestionIdRoute =
+  AdminQuestionsQuestionIdRouteImport.update({
+    id: '/questions/$questionId',
+    path: '/questions/$questionId',
+    getParentRoute: () => AdminRouteRoute,
+  } as any)
+const AdminQuestionsNewRoute = AdminQuestionsNewRouteImport.update({
+  id: '/questions/new',
+  path: '/questions/new',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/questions/$questionId': typeof AdminQuestionsQuestionIdRoute
+  '/admin/questions/new': typeof AdminQuestionsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/questions/$questionId': typeof AdminQuestionsQuestionIdRoute
+  '/admin/questions/new': typeof AdminQuestionsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/questions/$questionId': typeof AdminQuestionsQuestionIdRoute
+  '/admin/questions/new': typeof AdminQuestionsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/login'
+    | '/admin/'
+    | '/admin/questions/$questionId'
+    | '/admin/questions/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/login'
+    | '/admin'
+    | '/admin/questions/$questionId'
+    | '/admin/questions/new'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/login'
+    | '/admin/'
+    | '/admin/questions/$questionId'
+    | '/admin/questions/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +113,64 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/questions/$questionId': {
+      id: '/admin/questions/$questionId'
+      path: '/questions/$questionId'
+      fullPath: '/admin/questions/$questionId'
+      preLoaderRoute: typeof AdminQuestionsQuestionIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/questions/new': {
+      id: '/admin/questions/new'
+      path: '/questions/new'
+      fullPath: '/admin/questions/new'
+      preLoaderRoute: typeof AdminQuestionsNewRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
   }
 }
 
+interface AdminRouteRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminQuestionsQuestionIdRoute: typeof AdminQuestionsQuestionIdRoute
+  AdminQuestionsNewRoute: typeof AdminQuestionsNewRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+  AdminQuestionsQuestionIdRoute: AdminQuestionsQuestionIdRoute,
+  AdminQuestionsNewRoute: AdminQuestionsNewRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

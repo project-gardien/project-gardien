@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deslop"
+  short_description: "Simplify code by deleting accidental abstractions."
+  default_prompt: "Use deslop to simplify this code."
